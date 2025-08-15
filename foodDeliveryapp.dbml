@@ -1,0 +1,127 @@
+Table User{
+  ID int pK
+  Name varchar
+  email varchar unique
+}
+Table Address{
+  ID int pK
+  Street_No int
+  landmark varchar
+  district_ID int
+  pincode_ID int
+}
+Table district{
+  ID int pK
+  district_Name varchar
+}
+Table pincode{
+  ID int pK
+  pin int
+}
+Table User_Address{
+  User_ID int
+  Address_ID int
+  is_Default bool
+  indexes {
+    (User_ID,Address_ID) [pk]
+  }
+}
+Table Restaurant_Address{
+  Restaurant_ID int
+  Address_ID int
+}
+Table Restaurant{
+  ID int pK
+  Name varchar
+  Meal varchar
+  Price int
+}
+Table User_Payment_method{
+  ID int pK
+  User_ID int
+  payment_type int
+  account_no int
+  expiry_date date
+  is_default bool
+}
+Table payment_type{
+  ID int pK
+  value varchar
+}
+Table orders{
+  ID int pK
+  user_ID int
+  restaurant_ID int
+  Address_ID int
+  order_date date
+  order_time time
+  payment_ID int
+  total_price int
+  order_Status enum
+}
+Table order_items{
+  ID int pK
+  order_ID int
+  food_item_ID int
+  quantity int
+  total_price int
+}
+Table Menu_Item{
+  ID int pK
+  Restaurant_ID int
+  category_ID int
+  food_name varchar
+  price int
+  is_veg bool
+  description varchar
+  available bool
+}
+Table category{
+  ID int pK
+  name varchar
+}
+Table review{
+  user_ID int
+  order_item_ID int
+  rating int
+  comment varchar
+  created_at timestamp
+  indexes {
+    (user_ID,order_item_ID) [pk]
+  }
+}
+Ref: "User"."ID" < "User_Address"."User_ID"
+
+Ref: "Address"."ID" < "User_Address"."Address_ID"
+
+Ref: "Address"."district_ID" < "district"."ID"
+
+Ref: "Address"."pincode_ID" < "pincode"."ID"
+
+Ref: "Restaurant"."ID" < "Restaurant_Address"."Restaurant_ID"
+
+Ref: "Address"."ID" < "Restaurant_Address"."Address_ID"
+
+Ref: "payment_type"."ID" < "User_Payment_method"."payment_type"
+
+Ref: "User"."ID" < "User_Payment_method"."User_ID"
+
+Ref: "User"."ID" < "orders"."user_ID"
+
+Ref: "Restaurant"."ID" < "orders"."restaurant_ID"
+
+Ref: "Address"."ID" < "orders"."Address_ID"
+
+Ref: "User_Payment_method"."ID" < "orders"."payment_ID"
+
+Ref: "Restaurant"."ID" < "Menu_Item"."Restaurant_ID"
+
+Ref: "category"."ID" < "Menu_Item"."category_ID"
+
+Ref: "orders"."ID" < "order_items"."order_ID"
+
+Ref: "Menu_Item"."ID" < "order_items"."food_item_ID"
+
+Ref: "User"."ID" < "review"."user_ID"
+
+Ref: "order_items"."ID" < "review"."order_item_ID"
